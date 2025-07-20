@@ -1,71 +1,37 @@
-co@import url('https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap');
+const GOAL = 10000;
+let current = 0;
+let goalReached = false;
 
-body {
-  margin: 0;
-  background: transparent;
-  font-family: 'Bubblegum Sans', cursive;
-  color: #39ff14;
-  text-shadow: 0 0 6px #39ff14;
-  text-align: center;
+const countEl = document.getElementById("count");
+const progressEl = document.getElementById("progress");
+const dotEl = document.getElementById("dot");
+const imgEl = document.getElementById("celebrate-img");
+const sndEl = document.getElementById("celebrate-sound");
+
+// Simulated update — replace with real data from your API if needed
+function simulateUpdate() {
+  const next = Math.min(GOAL, current + Math.floor(Math.random() * 300));
+  updateCount(next);
+  if (next < GOAL && !goalReached) {
+    setTimeout(simulateUpdate, 2000);
+  }
+}
+setTimeout(simulateUpdate, 1000);
+
+function updateCount(newVal) {
+  current = newVal;
+  const pct = Math.min(100, (current / GOAL) * 100);
+  countEl.textContent = `${current.toLocaleString()} / ${GOAL.toLocaleString()} Followers`;
+  progressEl.style.width = `${pct}%`;
+  dotEl.style.left = `calc(${pct}% - 6px)`;
+
+  if (current >= GOAL && !goalReached) {
+    goalReached = true;
+    triggerCelebration();
+  }
 }
 
-#widget {
-  width: 500px;
-  margin: auto;
-  padding: 20px;
-}
-
-#header {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-
-#count-label {
-  font-size: 32px;
-  margin-bottom: 20px;
-}
-
-#bar-container {
-  position: relative;
-  height: 20px;
-  background: #222;
-  border-radius: 10px;
-  box-shadow: 0 0 10px #39ff14;
-  overflow: hidden;
-}
-
-#bar {
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-
-#progress {
-  position: absolute;
-  height: 100%;
-  background: linear-gradient(90deg, #00ffff, #ff00ff);
-  transition: width 1s ease-in-out;
-}
-
-#dot {
-  position: absolute;
-  top: -6px;
-  width: 12px;
-  height: 32px;
-  background: #fff;
-  border-radius: 50%;
-  box-shadow: 0 0 10px #fff, 0 0 20px #ff00ff;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); box-shadow: 0 0 10px #fff; }
-  50% { transform: scale(1.3); box-shadow: 0 0 20px #ff00ff; }
-  100% { transform: scale(1); box-shadow: 0 0 10px #fff; }
-}
-
-#celebrate-img {
-  margin-top: 20px;
-  width: 200px;
-  display: none;
+function triggerCelebration() {
+  imgEl.style.display = "block";
+  sndEl.play();
 }
